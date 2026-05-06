@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prévisionnel Promoteur SCI Tahiti</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#f9fafb;color:#111;padding:1rem;font-size:13px}
+h1{font-size:18px;font-weight:700;color:#0C447C;margin-bottom:2px}
+.subtitle{font-size:12px;color:#6b7280;margin-bottom:1rem}
+.nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem}
+.nb{padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #d1d5db;border-radius:7px;background:#fff;color:#374151;cursor:pointer}
+.nb.on{background:#0C447C;color:#fff;border-color:#0C447C}
+.sec{display:none}.sec.on{display:block}
+.card{background:#f3f4f6;border-radius:10px;padding:14px 16px;margin-bottom:.8rem;border:1px solid #e5e7eb}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+.psec{font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin:12px 0 5px;border-bottom:1px solid #e5e7eb;padding-bottom:3px}
+.psec:first-child{margin-top:0}
+.sr{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.sl{font-size:12px;color:#374151;min-width:210px;flex-shrink:0}
+.sv{font-size:12px;font-weight:700;min-width:68px;text-align:right}
+.chk{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;margin-bottom:6px}
+.lot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:8px}
+.lot-card{background:#fff;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px}
+.lot-label{font-size:11px;font-weight:700;color:#374151;margin-bottom:5px}
+.lot-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:3px}
+.lot-row input{width:64px;padding:3px 6px;border:1px solid #d1d5db;border-radius:4px;font-size:12px;text-align:right;font-weight:600;background:#fff}
+.vefa-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+.vc{background:#fff;border:1.5px solid #93c5fd;border-radius:8px;padding:10px}
+.vt{font-size:11px;font-weight:700;color:#1e3a8a;margin-bottom:6px;text-align:center}
+.vr{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#374151;margin-bottom:4px}
+.vr input{width:56px;padding:3px 5px;border:1px solid #d1d5db;border-radius:4px;font-size:12px;text-align:right;font-weight:600;background:#fff}
+.res-tabs{display:flex;border-bottom:2px solid #d1d5db;margin-bottom:1rem}
+.rt{padding:8px 16px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#6b7280;border-bottom:3px solid transparent;margin-bottom:-2px}
+.rt.on{color:#111;border-bottom-color:#111}
+.panel{display:none}.panel.on{display:block}
+.tw{border:1px solid #d1d5db;border-radius:9px;overflow:hidden;margin-bottom:1rem;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px}
+th{background:#f3f4f6;color:#111;font-weight:700;padding:7px 10px;text-align:left;border-bottom:1.5px solid #d1d5db;white-space:nowrap}
+th.r,td.r{text-align:right;font-variant-numeric:tabular-nums}
+td{padding:6px 10px;border-bottom:1px solid #f0f0f0;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.tbold td{font-weight:700;background:#f3f4f6}
+.tpos td{color:#065f46;font-weight:700;background:#f0fdf4}
+.tneg td{color:#991b1b;background:#fff5f5}
+.tinfo td{color:#1e3a8a;font-weight:700;background:#eff6ff}
+.twarn td{color:#78350f;font-weight:700;background:#fffbeb}
+.tred td{color:#991b1b;font-weight:600;background:#fef9f9}
+.tsep td{background:#f9fafb;font-size:10.5px;color:#9ca3af;font-style:italic;padding:3px 10px}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.mg5{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:1rem}
+.mc{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:9px 11px}
+.ml{font-size:10.5px;font-weight:600;color:#6b7280;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+.mv{font-size:16px;font-weight:700;color:#111}
+.mv.g{color:#065f46}.mv.r{color:#991b1b}.mv.b{color:#1e3a8a}.mv.o{color:#92400e}
+.ms2{font-size:10px;color:#6b7280;margin-top:1px}
+.al{border-radius:7px;padding:9px 13px;margin-bottom:.8rem;font-size:12px;font-weight:500;border:1.5px solid}
+.al.ok{background:#f0fdf4;color:#065f46;border-color:#86efac}
+.al.warn{background:#fffbeb;color:#78350f;border-color:#fcd34d}
+.al.info{background:#eff6ff;color:#1e3a8a;border-color:#93c5fd}
+.al.err{background:#fef2f2;color:#7f1d1d;border-color:#fca5a5}
+.st{font-size:13px;font-weight:700;color:#111;margin:1rem 0 6px}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:3px;margin-left:5px}
+.b-ok{background:#f0fdf4;color:#065f46;border:1px solid #86efac}
+.b-warn{background:#fffbeb;color:#78350f;border:1px solid #fcd34d}
+.b-err{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+.reset-btn{padding:5px 12px;font-size:11px;font-weight:600;border:1px solid #d1d5db;border-radius:5px;background:#fff;color:#374151;cursor:pointer}
+.timeline{display:flex;overflow-x:auto;margin-bottom:.5rem;border-radius:6px;overflow:hidden}
+.scheme{background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:12px;font-size:11.5px;line-height:1.8;color:#374151}
+.scheme b{color:#0C447C}
+</style>
+</head>
+<body>
+
+<h1>Prévisionnel Promoteur — SCI Tahiti</h1>
+<p class="subtitle">Financement par appels de fonds VEFA · Prêt foncier seul · Découvert bancaire pour décalages</p>
+
+<!-- Schéma de financement -->
+<div class="scheme" style="margin-bottom:1rem">
+  <b>Schéma de financement :</b>
+  SCI achète le terrain (prêt foncier 240 MS) →
+  Lancement commercial avant chantier →
+  Acheteurs financent les travaux via appels de fonds progressifs (VEFA) →
+  Découvert bancaire couvre les décalages entre décaissements et encaissements →
+  Livraison = solde VEFA + remboursement KRD foncier + reversement TVA nette
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="swSec('lots',this)">🏠 Lots & Prix</button>
+  <button class="nb" onclick="swSec('vefa',this)">📋 Tranches VEFA</button>
+  <button class="nb" onclick="swSec('commercial',this)">📈 Commercialisation</button>
+  <button class="nb" onclick="swSec('foncier',this)">🏦 Prêt foncier</button>
+  <button class="nb" onclick="swSec('charges',this)">🔨 Charges & TVA</button>
+  <button class="nb" onclick="swSec('fiscalite',this)">💶 Fiscalité</button>
+</div>
+
+<!-- ═══ LOTS ═══ -->
+<div class="sec on" id="sec-lots">
+  <div class="card">
+    <div class="psec">Prix de vente TTC par lot</div>
+    <div class="lot-grid">
+      <div class="lot-card"><div class="lot-label">Surface commerciale</div>
+        <div class="lot-row">Quantité <input type="number" id="q-com" value="1" min="0" max="20" oninput="u()"></div>
+        <div class="lot-row">Prix TTC (MS) <input type="number" id="p-com" value="196.2" step="0.1" oninput="u()"></div></div>
+      <div class="lot-card"><div class="lot-label">F2</div>
+        <div class="lot-row">Quantité <input type="number" id="q-f2" value="10" min="0" max="100" oninput="u()"></div>
+        <div class="lot-row">Prix TTC (MS) <input type="number" id="p-f2" value="36.0" step="0.1" oninput="u()"></div></div>
+      <div class="lot-card"><div class="lot-label">F3</div>
+        <div class="lot-row">Quantité <input type="number" id="q-f3" value="12" min="0" max="100" oninput="u()"></div>
+        <div class="lot-row">Prix TTC (MS) <input type="number" id="p-f3" value="55.0" step="0.1" oninput="u()"></div></div>
+      <div class="lot-card"><div class="lot-label">F4</div>
+        <div class="lot-row">Quantité <input type="number" id="q-f4" value="4" min="0" max="50" oninput="u()"></div>
+        <div class="lot-row">Prix TTC (MS) <input type="number" id="p-f4" value="66.0" step="0.1" oninput="u()"></div></div>
+      <div class="lot-card"><div class="lot-label">Attiques F4</div>
+        <div class="lot-row">Quantité <input type="number" id="q-att" value="2" min="0" max="20" oninput="u()"></div>
+        <div class="lot-row">Prix TTC (MS) <input type="number" id="p-att" value="90.0" step="0.1" oninput="u()"></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <span>Lots : <b id="v-nblots">29</b> · CA TTC : <b id="v-cattc" style="color:#0C447C">1 660,2 MS</b> · CA HT : <b id="v-caht" style="color:#065f46">1 523,1 MS</b></span>
+      <button class="reset-btn" onclick="resetLots()">Réinitialiser</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <div class="psec">Lots invendus à la livraison</div>
+        <div class="sr"><span class="sl">Taux de vente au lancement (%)</span><input type="range" min="0" max="100" value="80" step="5" id="txvte" oninput="u()" style="flex:1"><span class="sv" id="v-txvte">80 %</span></div>
+        <div class="sr"><span class="sl">Décote lots invendus (%)</span><input type="range" min="0" max="40" value="10" step="1" id="decote" oninput="u()" style="flex:1"><span class="sv" id="v-decote">10 %</span></div>
+      </div>
+      <div style="padding-top:14px">
+        <div class="al info" id="v-inv-info" style="margin:0">80% vendus au lancement. 20% soldés -10% à livraison.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VEFA ═══ -->
+<div class="sec" id="sec-vefa">
+  <div class="card">
+    <div class="psec">5 tranches VEFA — % du prix appelé à chaque étape</div>
+    <div class="vefa-grid">
+      <div class="vc"><div class="vt">1. Réservation</div>
+        <div class="vr">% appelé <input type="number" id="v1-pct" value="5" min="0" max="30" step="0.5" oninput="uV()"></div>
+        <div class="vr">Mois av. chantier <input type="number" id="v1-mois" value="0" min="0" max="12" oninput="u()"></div>
+        <div style="font-size:10px;color:#6b7280;margin-top:4px">Dépôt bloqué notaire → libéré à l'acte</div></div>
+      <div class="vc"><div class="vt">2. Fondations</div>
+        <div class="vr">% appelé <input type="number" id="v2-pct" value="30" min="0" max="60" step="0.5" oninput="uV()"></div>
+        <div class="vr">Mois chantier <input type="number" id="v2-mois" value="3" min="1" max="48" oninput="u()"></div></div>
+      <div class="vc"><div class="vt">3. Hors eau</div>
+        <div class="vr">% appelé <input type="number" id="v3-pct" value="35" min="0" max="60" step="0.5" oninput="uV()"></div>
+        <div class="vr">Mois chantier <input type="number" id="v3-mois" value="10" min="1" max="48" oninput="u()"></div></div>
+      <div class="vc"><div class="vt">4. Achèvement</div>
+        <div class="vr">% appelé <input type="number" id="v4-pct" value="25" min="0" max="60" step="0.5" oninput="uV()"></div>
+        <div class="vr">Mois chantier <input type="number" id="v4-mois" value="20" min="1" max="60" oninput="u()"></div></div>
+      <div class="vc"><div class="vt">5. Livraison</div>
+        <div class="vr">% appelé <input type="number" id="v5-pct" value="5" min="0" max="20" step="0.5" oninput="uV()"></div>
+        <div class="vr">Mois chantier <input type="number" id="v5-mois" value="24" min="1" max="60" oninput="u()"></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span>Total tranches : <b id="v-vt">100,0 %</b> <span id="v-vb" class="badge b-ok">✓ 100%</span></span>
+      <button class="reset-btn" onclick="resetVefa()">Réinitialiser VEFA</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMMERCIALISATION ═══ -->
+<div class="sec" id="sec-commercial">
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <div class="psec">Calendrier</div>
+        <div class="sr"><span class="sl">Lancement avant chantier (mois)</span><input type="range" min="0" max="12" value="3" step="1" id="avant-c" oninput="u()" style="flex:1"><span class="sv" id="v-avant">3 mois</span></div>
+        <div class="sr"><span class="sl">Durée chantier (mois)</span><input type="range" min="12" max="48" value="24" step="1" id="dur-c" oninput="u()" style="flex:1"><span class="sv" id="v-dur-c">24 mois</span></div>
+        <div class="sr"><span class="sl">Durée commercialisation (mois)</span><input type="range" min="1" max="18" value="6" step="1" id="dur-com" oninput="u()" style="flex:1"><span class="sv" id="v-dur-com">6 mois</span></div>
+      </div>
+      <div>
+        <div class="psec">Actes notariés</div>
+        <div class="sr"><span class="sl">Délai réservation → acte (mois)</span><input type="range" min="1" max="6" value="2" step="1" id="delai-acte" oninput="u()" style="flex:1"><span class="sv" id="v-delai-acte">2 mois</span></div>
+        <div class="sr"><span class="sl">% vendus avant ouverture chantier (cible)</span><input type="range" min="0" max="100" value="80" step="5" id="pc-prev" oninput="u()" style="flex:1"><span class="sv" id="v-pc-prev">80 %</span></div>
+      </div>
+    </div>
+    <div class="psec">Timeline projet</div>
+    <div class="timeline" id="tl-div"></div>
+    <div id="tl-info" style="font-size:11px;color:#6b7280;margin-top:4px"></div>
+  </div>
+</div>
+
+<!-- ═══ PRÊT FONCIER ═══ -->
+<div class="sec" id="sec-foncier">
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <div class="psec">Prêt foncier</div>
+        <div class="sr"><span class="sl">Montant prêt foncier (MS)</span><input type="range" min="0" max="500" value="240" step="5" id="pf" oninput="u()" style="flex:1"><span class="sv" id="v-pf">240 MS</span></div>
+        <div class="sr"><span class="sl">Durée amortissement (ans)</span><input type="range" min="5" max="25" value="20" step="1" id="df" oninput="u()" style="flex:1"><span class="sv" id="v-df">20 ans</span></div>
+        <div class="sr"><span class="sl">Taux prêt foncier (%/an)</span><input type="range" min="0.5" max="8" value="2.8" step="0.1" id="taux-f" oninput="u()" style="flex:1"><span class="sv" id="v-taux-f">2,8 %</span></div>
+        <div class="chk"><input type="checkbox" id="af" checked onchange="u()"><label for="af">Amorti sur durée (décocher = in fine)</label></div>
+        <div style="font-size:11px;color:#6b7280;margin-top:4px">Remboursé intégralement à la livraison (KRD + mensualités courantes)</div>
+      </div>
+      <div>
+        <div class="psec">Découvert bancaire</div>
+        <div class="sr"><span class="sl">Plafond découvert autorisé (MS)</span><input type="range" min="0" max="600" value="200" step="10" id="dec-max" oninput="u()" style="flex:1"><span class="sv" id="v-dec-max">200 MS</span></div>
+        <div class="sr"><span class="sl">Taux débiteur découvert (%/an)</span><input type="range" min="1" max="12" value="5" step="0.25" id="taux-deb" oninput="u()" style="flex:1"><span class="sv" id="v-taux-deb">5,0 %</span></div>
+        <div class="al info" style="margin-top:8px;margin-bottom:0;font-size:11px">Le découvert couvre les décalages entre décaissements travaux et encaissements VEFA. Intérêts calculés mois par mois sur le solde négatif réel.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHARGES ═══ -->
+<div class="sec" id="sec-charges">
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <div class="psec">Terrain</div>
+        <div class="sr"><span class="sl">Prix terrain (MS)</span><input type="range" min="0" max="500" value="240" step="5" id="ter" oninput="u()" style="flex:1"><span class="sv" id="v-ter">240 MS</span></div>
+        <div class="sr"><span class="sl">Frais notaire (MS)</span><input type="range" min="0" max="60" value="23.5" step="0.5" id="fno" oninput="u()" style="flex:1"><span class="sv" id="v-fno">23,5 MS</span></div>
+        <div style="font-size:11px;color:#6b7280">Total terrain : <b id="v-terr-tot">263,5 MS</b></div>
+      </div>
+      <div>
+        <div class="psec">Construction & honoraires</div>
+        <div class="sr"><span class="sl">Travaux HT (MS)</span><input type="range" min="0" max="1500" value="850" step="10" id="trv" oninput="u()" style="flex:1"><span class="sv" id="v-trv">850 MS</span></div>
+        <div class="sr"><span class="sl">Honoraires archi & études HT (MS)</span><input type="range" min="0" max="300" value="100" step="5" id="ar" oninput="u()" style="flex:1"><span class="sv" id="v-ar">100 MS</span></div>
+        <div class="sr"><span class="sl">Commercialisation (% CA HT)</span><input type="range" min="0" max="8" value="1.97" step="0.05" id="com-pct" oninput="u()" style="flex:1"><span class="sv" id="v-com-pct">1,97 %</span></div>
+        <div class="sr"><span class="sl">Assurances DO & GFA (MS)</span><input type="range" min="0" max="60" value="20" step="1" id="assur" oninput="u()" style="flex:1"><span class="sv" id="v-assur">20 MS</span></div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:6px">
+      <div>
+        <div class="psec">TVA sur ventes</div>
+        <div class="sr"><span class="sl">TVA résidentiel (%)</span><input type="range" min="0" max="20" value="9" step="0.5" id="tva-vte" oninput="u()" style="flex:1"><span class="sv" id="v-tva-vte">9,0 %</span></div>
+        <div class="sr"><span class="sl">TVA surface commerciale (%)</span><input type="range" min="0" max="20" value="9" step="0.5" id="tva-cl" oninput="u()" style="flex:1"><span class="sv" id="v-tva-cl">9,0 %</span></div>
+      </div>
+      <div>
+        <div class="psec">TVA sur charges</div>
+        <div class="sr"><span class="sl">TVA construction (%)</span><input type="range" min="0" max="20" value="13" step="0.5" id="tva-trv" oninput="u()" style="flex:1"><span class="sv" id="v-tva-trv">13,0 %</span></div>
+        <div class="sr"><span class="sl">TVA archi & études (%)</span><input type="range" min="0" max="20" value="13" step="0.5" id="tva-ar" oninput="u()" style="flex:1"><span class="sv" id="v-tva-ar">13,0 %</span></div>
+        <div class="sr"><span class="sl">TVA commercialisation (%)</span><input type="range" min="0" max="20" value="12" step="0.5" id="tva-com" oninput="u()" style="flex:1"><span class="sv" id="v-tva-com">12,0 %</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FISCALITÉ ═══ -->
+<div class="sec" id="sec-fiscalite">
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <div class="psec">Répartition SCI / SARL</div>
+        <div class="sr"><span class="sl">Prime de succès SARL (% marge nette)</span><input type="range" min="0" max="100" value="50" step="1" id="pr" oninput="u()" style="flex:1"><span class="sv" id="v-pr" style="color:#92400e">50 %</span></div>
+        <div class="sr"><span class="sl">Ta part dans la SARL (%)</span><input type="range" min="1" max="99" value="50" step="1" id="det" oninput="u()" style="flex:1"><span class="sv" id="v-det">50 %</span></div>
+      </div>
+      <div>
+        <div class="psec">Impôts</div>
+        <div class="sr"><span class="sl">IS SCI (0% = exo 3 ans)</span><input type="range" min="0" max="35" value="0" step="1" id="is" oninput="u()" style="flex:1"><span class="sv" id="v-is" style="color:#065f46">0 %</span></div>
+        <div class="sr"><span class="sl">IS SARL (0% = exo 3 ans)</span><input type="range" min="0" max="35" value="0" step="1" id="is2" oninput="u()" style="flex:1"><span class="sv" id="v-is2" style="color:#065f46">0 %</span></div>
+        <div class="sr"><span class="sl">Prélèvement dividendes (%)</span><input type="range" min="0" max="30" value="10" step="1" id="ir" oninput="u()" style="flex:1"><span class="sv" id="v-ir">10 %</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RÉSULTATS ═══ -->
+<div class="res-tabs">
+  <button class="rt on" onclick="swRes('syn',this)">Synthèse</button>
+  <button class="rt" onclick="swRes('treso',this)">Trésorerie mensuelle</button>
+  <button class="rt" onclick="swRes('pl',this)">P&L</button>
+  <button class="rt" onclick="swRes('tva',this)">TVA</button>
+</div>
+<div class="panel on" id="r-syn">
+  <div class="mg5" id="k-syn"></div>
+  <div id="al-syn"></div>
+  <div class="tw"><table id="t-syn"></table></div>
+  <div class="st">Répartition finale SCI + SARL</div>
+  <div class="mg" id="k-final"></div>
+</div>
+<div class="panel" id="r-treso">
+  <div class="al info">Trésorerie mois par mois. Les appels de fonds VEFA financent progressivement le chantier. Le découvert bancaire couvre les décalages et génère des intérêts débiteurs calculés sur le solde négatif réel.</div>
+  <div class="mg" id="k-treso"></div>
+  <div class="tw"><table id="t-treso"></table></div>
+  <div id="al-treso"></div>
+</div>
+<div class="panel" id="r-pl">
+  <div class="al info">Seuls les intérêts (prêt foncier + intérêts débiteurs découvert) sont des charges P&L. Le capital remboursé est un flux de trésorerie hors résultat.</div>
+  <div class="tw"><table id="t-pl"></table></div>
+  <div class="mg" id="k-pl"></div>
+</div>
+<div class="panel" id="r-tva">
+  <div class="al info">TVA collectée progressivement à chaque appel de fonds. TVA déductible au fil des paiements chantier. Le solde négatif pendant le chantier = crédit TVA récupérable DICP.</div>
+  <div class="mg" id="k-tva"></div>
+  <div class="tw"><table id="t-tva"></table></div>
+</div>
+
+<script>
+// ═══ HELPERS ════════════════════════════════════════════════════════════════
+function gv(id){return parseFloat(document.getElementById(id).value)||0;}
+function gi(id){return parseInt(document.getElementById(id).value)||0;}
+function ck(id){return document.getElementById(id).checked;}
+function fm(v){return(v>=0?'':'-')+Math.abs(v).toFixed(1).replace('.',',')+'&nbsp;MS';}
+function fp(v){return v.toFixed(1)+'%';}
+function cc(v){return v>=0?'#065f46':'#991b1b';}
+function mns(cap,tm,n){if(cap<=0||n<=0)return 0;if(tm<1e-12)return cap/n;return cap*tm*Math.pow(1+tm,n)/(Math.pow(1+tm,n)-1);}
+function zz(n){var a=[];for(var i=0;i<n;i++)a.push(0);return a;}
+function kc(l,v,c,s){return'<div class="mc"><div class="ml">'+l+'</div><div class="mv '+c+'">'+v+'</div><div class="ms2">'+s+'</div></div>';}
+function sum(a){return a.reduce(function(s,x){return s+x;},0);}
+
+var LDEFS=[['q-com',1],['p-com',196.2],['q-f2',10],['p-f2',36.0],['q-f3',12],['p-f3',55.0],['q-f4',4],['p-f4',66.0],['q-att',2],['p-att',90.0]];
+function resetLots(){LDEFS.forEach(function(x){document.getElementById(x[0]).value=x[1];});u();}
+function resetVefa(){[['v1-pct',5],['v2-pct',30],['v3-pct',35],['v4-pct',25],['v5-pct',5],['v1-mois',0],['v2-mois',3],['v3-mois',10],['v4-mois',20],['v5-mois',24]].forEach(function(x){document.getElementById(x[0]).value=x[1];});u();}
+
+function uV(){
+  var tot=gv('v1-pct')+gv('v2-pct')+gv('v3-pct')+gv('v4-pct')+gv('v5-pct');
+  document.getElementById('v-vt').textContent=tot.toFixed(1).replace('.',',')+' %';
+  var b=document.getElementById('v-vb');
+  if(Math.abs(tot-100)<0.1){b.className='badge b-ok';b.textContent='✓ 100%';}
+  else if(tot<100){b.className='badge b-warn';b.textContent='⚠ '+tot.toFixed(1)+'%';}
+  else{b.className='badge b-err';b.textContent='✗ '+tot.toFixed(1)+'%';}
+  u();
+}
+
+// ═══ CA ═════════════════════════════════════════════════════════════════════
+function getCA(){
+  var rV=gv('tva-vte')/100, rC=gv('tva-cl')/100;
+  var txV=gv('txvte')/100, dec=gv('decote')/100;
+  var ttcB=gi('q-com')*gv('p-com')+gi('q-f2')*gv('p-f2')+gi('q-f3')*gv('p-f3')+gi('q-f4')*gv('p-f4')+gi('q-att')*gv('p-att');
+  var ttcV=ttcB*txV, ttcInv=ttcB*(1-txV)*(1-dec), ttcTot=ttcV+ttcInv;
+  var frac=ttcTot/Math.max(0.001,ttcB);
+  var ttcCom=gi('q-com')*gv('p-com')*frac, htCom=ttcCom/(1+rC), tvaCom=ttcCom-htCom;
+  var ttcRes=ttcTot-ttcCom, htRes=ttcRes/(1+rV), tvaRes=ttcRes-htRes;
+  return{ttcTot:ttcTot,htTot:htCom+htRes,tvaTot:tvaCom+tvaRes,ttcV:ttcV,ttcInv:ttcInv,ttcB:ttcB,rV:rV,rC:rC};
+}
+
+// ═══ COMPUTE ════════════════════════════════════════════════════════════════
+function compute(){
+  var ca=getCA();
+  var avC=gi('avant-c'), durC=gi('dur-c'), durCom=gi('dur-com'), delA=gi('delai-acte');
+  var N=avC+durC+4; // mois total simulation
+
+  // Prêt foncier
+  var pf=gv('pf'), dfM=gi('df')*12, TF=gv('taux-f')/100/12, amF=ck('af');
+  var mF=amF?mns(pf,TF,dfM):pf*TF;
+  var capFx=pf;
+  var intFm=zz(N), rembFm=zz(N), mensFm=zz(N);
+  for(var mi=0;mi<N;mi++){
+    var iF=capFx*TF, cF=amF?Math.max(0,mF-iF):0;
+    intFm[mi]=iF; rembFm[mi]=cF; mensFm[mi]=amF?mF:iF;
+    capFx=Math.max(0,capFx-cF);
+  }
+  var capFr=capFx; // KRD
+
+  // Charges mensuelles réparties sur durée chantier
+  var TERR=gv('ter')+gv('fno');
+  var trv=gv('trv'), ar=gv('ar'), comPct=gv('com-pct')/100, assur=gv('assur');
+  var com=ca.htTot*comPct;
+  var rTrv=gv('tva-trv')/100, rAr=gv('tva-ar')/100, rCom2=gv('tva-com')/100;
+  var chTm=zz(N),chAm=zz(N),chCm=zz(N),chAsm=zz(N);
+  var tvaTm=zz(N),tvaAm=zz(N),tvaCom2m=zz(N);
+  for(var mk=0;mk<N;mk++){
+    var fc=(mk>=avC&&mk<avC+durC)?1/durC:0;
+    chTm[mk]=trv*fc; chAm[mk]=ar*fc; chCm[mk]=com*fc; chAsm[mk]=assur*fc;
+    tvaTm[mk]=trv*fc*rTrv; tvaAm[mk]=ar*fc*rAr; tvaCom2m[mk]=com*fc*rCom2;
+  }
+
+  // Encaissements VEFA
+  var vPct=[gv('v1-pct'),gv('v2-pct'),gv('v3-pct'),gv('v4-pct'),gv('v5-pct')].map(function(x){return x/100;});
+  var vMois=[gi('v1-mois'),gi('v2-mois'),gi('v3-mois'),gi('v4-mois'),gi('v5-mois')];
+  var encVm=zz(N), tvaVm=zz(N);
+  var rVte=ca.rV;
+  // Distribution des ventes sur durCom mois (concentrée début)
+  var vPm=zz(durCom);
+  if(durCom>=2){vPm[0]=0.40;vPm[1]=0.30;var rv2=0.30/Math.max(1,durCom-2);for(var vi=2;vi<durCom;vi++)vPm[vi]=rv2;}
+  else{vPm[0]=1.0;}
+
+  for(var vm=0;vm<durCom;vm++){
+    var mV=ca.ttcV*vPm[vm];
+    // Tranche 1 : libérée à l'acte
+    var mAc=vm+delA;
+    if(mAc<N){encVm[mAc]+=mV*vPct[0];tvaVm[mAc]+=mV*vPct[0]/(1+rVte)*rVte;}
+    // Tranches 2-5 : à l'étape chantier
+    for(var tr=1;tr<5;tr++){
+      var mTr=avC+vMois[tr];
+      if(mTr<N&&mTr>=vm+delA){encVm[mTr]+=mV*vPct[tr];tvaVm[mTr]+=mV*vPct[tr]/(1+rVte)*rVte;}
+    }
+  }
+  // Invendus soldés à livraison
+  var mLiv=avC+durC;
+  if(mLiv<N){encVm[mLiv]+=ca.ttcInv;tvaVm[mLiv]+=ca.ttcInv/(1+rVte)*rVte;}
+
+  // Trésorerie mensuelle
+  var TD=gv('taux-deb')/100/12;
+  var soldeM=zz(N), intDebM=zz(N);
+  var sc=0;
+  for(var ms=0;ms<N;ms++){
+    // Encaissements : VEFA + prêt foncier (tiré au début)
+    var enc=encVm[ms]+(ms===0?pf:0);
+    // Décaissements : terrain (mois 0) + charges TTC + mensualités foncier + KRD à livraison
+    var dec=(ms===0?TERR:0)
+            +chTm[ms]+chAm[ms]+chCm[ms]+chAsm[ms]
+            +tvaTm[ms]+tvaAm[ms]+tvaCom2m[ms]
+            +mensFm[ms]
+            +(ms===mLiv?capFr:0); // KRD soldé à livraison
+    sc+=enc-dec;
+    // Intérêts débiteurs sur solde négatif
+    var iD=sc<0?Math.abs(sc)*TD:0;
+    intDebM[ms]=iD; sc-=iD; soldeM[ms]=sc;
+  }
+  var totIntDeb=sum(intDebM);
+  var decMax=Math.abs(Math.min.apply(null,soldeM.concat([0])));
+
+  // TVA reversée DICP à livraison (ajout dans trésorerie)
+  var totTvaColl=sum(tvaVm);
+  var totTvaDed=sum(tvaTm)+sum(tvaAm)+sum(tvaCom2m);
+  var soldeTVA=totTvaColl-totTvaDed;
+  // Si TVA à reverser positive → décaissement supplémentaire à livraison (déjà dans le solde via TVA charges)
+  // NB : le flux TVA est déjà intégré car on décaisse les charges TTC et on encaisse les VEFA TTC
+
+  // Agrégation annuelle
+  var nAns=Math.ceil(N/12);
+  var intFan=zz(nAns),intDAn=zz(nAns),chOpAn=zz(nAns),encVan=zz(nAns);
+  var tvaCAn=zz(nAns),tvaDan=zz(nAns);
+  for(var ma=0;ma<N;ma++){
+    var ax=Math.min(Math.floor(ma/12),nAns-1);
+    intFan[ax]+=intFm[ma]; intDAn[ax]+=intDebM[ma];
+    chOpAn[ax]+=chTm[ma]+chAm[ma]+chCm[ma]+chAsm[ma];
+    encVan[ax]+=encVm[ma];
+    tvaCAn[ax]+=tvaVm[ma];
+    tvaDan[ax]+=tvaTm[ma]+tvaAm[ma]+tvaCom2m[ma];
+  }
+
+  var totIntF=sum(intFan), totChOp=sum(chOpAn);
+  var totCR=TERR+totChOp+totIntF+totIntDeb;
+  var marge=ca.htTot-totCR;
+  var prime=marge*gv('pr')/100, resSCI=marge-prime;
+  var isSCI=Math.max(0,resSCI)*gv('is')/100, netSCI=resSCI-isSCI;
+  var divSCI=Math.max(0,netSCI)*gv('ir')/100, gainSCI=netSCI-divSCI;
+  var isSARL=Math.max(0,prime)*gv('is2')/100, netSARL=prime-isSARL;
+  var divSARL=Math.max(0,netSARL)*gv('ir')/100, gainSARL=netSARL-divSARL;
+  var det=gv('det')/100;
+  var gToiS=gainSARL*det, gPromo=gainSARL*(1-det), gTot=gainSCI+gToiS;
+
+  return{N,durC,avC,durCom,delA,ca,TERR,com,
+    soldeM,intDebM,totIntDeb,decMax,decMaxP:gv('dec-max'),
+    intFan,intDAn,chOpAn,encVan,tvaCAn,tvaDan,soldeTVA,
+    totIntF,totChOp,totCR,marge,prime,resSCI,isSCI,netSCI,divSCI,gainSCI,
+    netSARL,gainSARL,gToiS,gPromo,gTot,
+    encVm,chTm,chAm,chCm,chAsm,tvaTm,tvaAm,tvaCom2m,tvaVm,
+    mensFm,intFm,rembFm,nAns,pf,capFr,mF,TF,amF,
+    mLiv,totTvaColl,totTvaDed};
+}
+
+// ═══ RENDU SYNTHÈSE ══════════════════════════════════════════════════════════
+function rSyn(d){
+  document.getElementById('k-syn').innerHTML=[
+    kc('CA net total',fm(d.ca.ttcTot),'b','TTC vendus + invendus soldés'),
+    kc('CA HT',fm(d.ca.htTot),'b','Hors TVA'),
+    kc('Marge brute',fm(d.marge),d.marge>=0?'g':'r',fp(d.ca.htTot>0?d.marge/d.ca.htTot*100:0)+' du CA HT'),
+    kc('Découvert max réel',fm(d.decMax),d.decMax>d.decMaxP?'r':'o','Pic trésorerie négatif'),
+    kc('Int. débiteurs totaux',fm(d.totIntDeb),'o','Coût du découvert'),
+  ].join('');
+  var al='';
+  if(d.marge<0) al='<div class="al err"><b>Marge négative ('+fm(d.marge)+')</b> — projet non rentable avec ces paramètres.</div>';
+  else if(d.decMax>d.decMaxP) al='<div class="al warn"><b>Découvert max réel '+fm(d.decMax)+' > plafond autorisé '+fm(d.decMaxP)+'</b> — augmenter le plafond ou accélérer les pré-ventes.</div>';
+  else al='<div class="al ok"><b>Projet viable.</b> Marge '+fm(d.marge)+' · Découvert max '+fm(d.decMax)+' ≤ plafond '+fm(d.decMaxP)+'.</div>';
+  document.getElementById('al-syn').innerHTML=al;
+
+  var phases=[['Pré-com & lancement',0,d.avC],['Chantier',d.avC,d.avC+d.durC],['Post-livraison',d.avC+d.durC,d.N]];
+  var h='<thead><tr><th>Phase</th><th class="r">Durée</th><th class="r">VEFA encaissé</th><th class="r">Charges TTC</th><th class="r">Prêt foncier</th><th class="r">Int. débiteurs</th><th class="r">Flux net</th><th class="r">Solde cumulé</th></tr></thead><tbody>';
+  var cumS=0;
+  phases.forEach(function(ph){
+    var ev=0,ch=0,pf2=0,iD=0;
+    for(var pi=ph[1];pi<Math.min(ph[2],d.N);pi++){
+      ev+=d.encVm[pi];
+      ch+=(pi===0?d.TERR:0)+d.chTm[pi]+d.chAm[pi]+d.chCm[pi]+d.chAsm[pi]+d.tvaTm[pi]+d.tvaAm[pi]+d.tvaCom2m[pi];
+      pf2+=d.mensFm[pi]+(pi===d.mLiv?d.capFr:0)+(pi===0?-d.pf:0);
+      iD+=d.intDebM[pi];
+    }
+    var fl=ev+(ph[1]===0?d.pf:0)-ch-pf2-iD; cumS+=fl;
+    h+='<tr class="'+(fl>=0?'tpos':'tneg')+'"><td>'+ph[0]+'</td><td class="r">'+(ph[2]-ph[1])+' mois</td><td class="r">'+fm(ev)+'</td><td class="r">'+fm(ch)+'</td><td class="r">'+fm(pf2)+'</td><td class="r">'+(iD>0.001?'<span style="color:#991b1b">'+fm(iD)+'</span>':'—')+'</td><td class="r">'+fm(fl)+'</td><td class="r" style="font-weight:700;color:'+cc(cumS)+'">'+fm(cumS)+'</td></tr>';
+  });
+  document.getElementById('t-syn').innerHTML=h+'</tbody>';
+  document.getElementById('k-final').innerHTML=[
+    kc('Ton gain SCI',fm(d.gainSCI),'g','SCI 100%'),
+    kc('Ton gain SARL',fm(d.gToiS),'g',Math.round(gv('det'))+'% prime nette'),
+    kc('TON TOTAL NET',fm(d.gTot),d.gTot>=0?'g':'r','SCI + SARL'),
+    kc('Gain promoteur',fm(d.gPromo),'b',Math.round(100-gv('det'))+'% prime SARL'),
+  ].join('');
+}
+
+// ═══ RENDU TRÉSORERIE ════════════════════════════════════════════════════════
+function rTreso(d){
+  var h='<thead><tr><th>Mois</th><th>Phase</th><th class="r">VEFA encaissé</th><th class="r">Prêt foncier</th><th class="r">Charges TTC</th><th class="r">Mensualité foncier</th><th class="r">KRD livraison</th><th class="r">Int. débiteurs</th><th class="r">Flux net</th><th class="r">Solde cumulé</th></tr></thead><tbody>';
+  var sc=0;
+  for(var mi=0;mi<d.N;mi++){
+    var ph=mi<d.avC?'Pré-com':mi<d.avC+d.durC?'Chantier':'Post-liv';
+    var ev=d.encVm[mi], pfTir=mi===0?d.pf:0;
+    var ch=(mi===0?d.TERR:0)+d.chTm[mi]+d.chAm[mi]+d.chCm[mi]+d.chAsm[mi]+d.tvaTm[mi]+d.tvaAm[mi]+d.tvaCom2m[mi];
+    var mens=d.mensFm[mi];
+    var krd=mi===d.mLiv?d.capFr:0;
+    var fl=ev+pfTir-ch-mens-krd-d.intDebM[mi];
+    sc+=fl;
+    var iDs=d.intDebM[mi]>0.001?'<b style="color:#991b1b">'+fm(d.intDebM[mi])+'</b>':'—';
+    h+='<tr class="'+(sc<0?'tred':'')+'"><td style="font-weight:600">M'+mi+'</td><td>'+ph+'</td>';
+    h+='<td class="r">'+(ev>0.001?fm(ev):'—')+'</td>';
+    h+='<td class="r">'+(pfTir>0?fm(pfTir):'—')+'</td>';
+    h+='<td class="r">'+(ch>0.001?fm(ch):'—')+'</td>';
+    h+='<td class="r">'+(mens>0.001?fm(mens):'—')+'</td>';
+    h+='<td class="r">'+(krd>0.001?'<b style="color:#78350f">'+fm(krd)+'</b>':'—')+'</td>';
+    h+='<td class="r">'+iDs+'</td>';
+    h+='<td class="r" style="font-weight:700;color:'+cc(fl)+'">'+fm(fl)+'</td>';
+    h+='<td class="r" style="font-weight:700;color:'+cc(sc)+'">'+fm(sc)+'</td></tr>';
+  }
+  document.getElementById('t-treso').innerHTML=h+'</tbody>';
+  document.getElementById('k-treso').innerHTML=[
+    kc('Découvert max réel',fm(d.decMax),d.decMax>d.decMaxP?'r':'o','Pic solde négatif'),
+    kc('Int. débiteurs totaux',fm(d.totIntDeb),'o','Coût total découvert'),
+    kc('Plafond autorisé',fm(d.decMaxP),d.decMax<=d.decMaxP?'g':'r','Ligne de crédit'),
+    kc('Solde final',fm(d.soldeM[d.N-1]),d.soldeM[d.N-1]>=0?'g':'r','Après tout soldé'),
+  ].join('');
+  document.getElementById('al-treso').innerHTML=d.totIntDeb>0.001
+    ?'<div class="al warn"><b>Intérêts débiteurs cumulés : '+fm(d.totIntDeb)+'</b> au taux '+gv('taux-deb').toFixed(2)+'%/an. Pour les réduire : augmenter les appels de fonds anticipés ou accélérer les pré-ventes.</div>'
+    :'<div class="al ok"><b>Aucun intérêt débiteur</b> — les appels de fonds couvrent les décaissements à tout moment.</div>';
+}
+
+// ═══ RENDU P&L ═══════════════════════════════════════════════════════════════
+function rPL(d){
+  var cols='<th>Poste P&L</th>';
+  for(var ai=0;ai<d.nAns;ai++) cols+='<th class="r">An '+(ai+1)+'</th>';
+  cols+='<th class="r">Total</th>';
+  function rw(lbl,vals,cls,tot2){
+    var r='<tr class="'+(cls||'')+'"><td>'+lbl+'</td>',tt=0;
+    for(var ai2=0;ai2<d.nAns;ai2++){var v=vals[ai2]||0;tt+=v;r+='<td class="r">'+fm(v)+'</td>';}
+    r+='<td class="r">'+fm(tot2!==undefined?tot2:tt)+'</td></tr>';
+    return r;
+  }
+  var em=Array(d.nAns).fill('<td></td>').join('');
+  var h='<thead><tr>'+cols+'</tr></thead><tbody>';
+  h+='<tr class="tsep"><td colspan="'+(d.nAns+2)+'">— PRODUITS —</td></tr>';
+  h+=rw('Ventes HT (appels de fonds VEFA progressifs)',d.encVan.map(function(v){return v/(1+gv('tva-vte')/100);}),d.nAns,'tpos',d.ca.htTot);
+  h+='<tr class="tsep"><td colspan="'+(d.nAns+2)+'">— CHARGES —</td></tr>';
+  var ta=zz(d.nAns);ta[0]=d.TERR;
+  h+=rw('Terrain + notaire (coût de revient)',ta,'tneg',d.TERR);
+  h+=rw('Travaux + archi + com + assurances HT',d.chOpAn,'tneg',d.totChOp);
+  h+=rw('Intérêts prêt foncier',d.intFan,'tneg',d.totIntF);
+  h+=rw('Intérêts débiteurs découvert',d.intDAn,'tneg',d.totIntDeb);
+  h+='<tr class="tsep"><td colspan="'+(d.nAns+2)+'">Remboursement capital foncier (mensualités + KRD livraison) = trésorerie — hors P&L</td></tr>';
+  h+='<tr class="tbold"><td>Marge brute avant prime</td>'+em+'<td class="r">'+fm(d.marge)+'</td></tr>';
+  h+='<tr class="tneg"><td>Prime SARL ('+Math.round(gv('pr'))+'%)</td>'+em+'<td class="r">'+fm(-d.prime)+'</td></tr>';
+  h+='<tr class="tbold"><td>Résultat SCI avant IS</td>'+em+'<td class="r">'+fm(d.resSCI)+'</td></tr>';
+  if(gv('is')>0) h+='<tr class="tneg"><td>IS SCI ('+Math.round(gv('is'))+'%)</td>'+em+'<td class="r">'+fm(-d.isSCI)+'</td></tr>';
+  else h+='<tr><td style="color:#065f46;font-weight:600">IS SCI — exonéré (0%)</td>'+em+'<td class="r" style="color:#065f46">0,0 MS</td></tr>';
+  h+='<tr class="tbold"><td>Résultat net distribuable</td>'+em+'<td class="r">'+fm(d.netSCI)+'</td></tr>';
+  h+='<tr class="tneg"><td>Prélèvement dividendes ('+Math.round(gv('ir'))+'%)</td>'+em+'<td class="r">'+fm(-d.divSCI)+'</td></tr>';
+  h+='<tr class="tpos" style="border-top:2px solid #86efac"><td><b>TON GAIN NET SCI</b></td>'+em+'<td class="r" style="font-size:14px"><b>'+fm(d.gainSCI)+'</b></td></tr>';
+  h+='</tbody>';
+  document.getElementById('t-pl').innerHTML=h;
+  document.getElementById('k-pl').innerHTML=[
+    kc('Marge / CA HT',fp(d.ca.htTot>0?d.marge/d.ca.htTot*100:0),'g','Avant prime & IS'),
+    kc('Int. foncier',fm(d.totIntF),'o','Charge P&L prêt foncier'),
+    kc('Int. débiteurs',fm(d.totIntDeb),'o','Coût découvert bancaire'),
+    kc('Gain net SCI',fm(d.gainSCI),d.gainSCI>=0?'g':'r','Après IS + dividendes'),
+  ].join('');
+}
+
+// ═══ RENDU TVA ═══════════════════════════════════════════════════════════════
+function rTVA(d){
+  var totC=sum(d.tvaCAn), totD=sum(d.tvaDan), solTV=totC-totD;
+  var cols2='<th>Poste TVA</th>';
+  for(var ai3=0;ai3<d.nAns;ai3++) cols2+='<th class="r">An '+(ai3+1)+'</th>';
+  cols2+='<th class="r">Total</th>';
+  function rw2(lbl,vals,cls,tot3){
+    var r='<tr class="'+(cls||'')+'"><td>'+lbl+'</td>',tt=0;
+    for(var ai4=0;ai4<d.nAns;ai4++){var v=vals[ai4]||0;tt+=v;r+='<td class="r">'+fm(v)+'</td>';}
+    r+='<td class="r">'+fm(tot3!==undefined?tot3:tt)+'</td></tr>';
+    return r;
+  }
+  var tvTrvA=zz(d.nAns),tvArA=zz(d.nAns),tvCom2A=zz(d.nAns);
+  for(var ma2=0;ma2<d.N;ma2++){var ax2=Math.min(Math.floor(ma2/12),d.nAns-1);tvTrvA[ax2]+=d.tvaTm[ma2];tvArA[ax2]+=d.tvaAm[ma2];tvCom2A[ax2]+=d.tvaCom2m[ma2];}
+  var h='<thead><tr>'+cols2+'</tr></thead><tbody>';
+  h+=rw2('TVA collectée (appels de fonds progressifs)',d.tvaCAn,'tinfo',totC);
+  h+='<tr class="tsep"><td colspan="'+(d.nAns+2)+'">TVA déductible au fil des paiements</td></tr>';
+  h+=rw2('TVA déductible construction',tvTrvA,'tneg');
+  h+=rw2('TVA déductible archi',tvArA,'tneg');
+  h+=rw2('TVA déductible commercialisation',tvCom2A,'tneg');
+  h+=rw2('Total TVA déductible',d.tvaDan,'tbold',totD);
+  var sAn=d.tvaCAn.map(function(v,i){return v-d.tvaDan[i];});
+  var rr='<tr class="tbold" style="border-top:2px solid #d1d5db"><td>Solde TVA période</td>';
+  for(var ai5=0;ai5<d.nAns;ai5++) rr+='<td class="r" style="color:'+cc(sAn[ai5])+'">'+fm(sAn[ai5])+'</td>';
+  rr+='<td class="r" style="color:'+cc(solTV)+'">'+fm(solTV)+'</td></tr>';
+  h+=rr;
+  h+='<tr class="'+(solTV>=0?'twarn':'tpos')+'" style="border-top:2px solid #d1d5db"><td><b>'+(solTV>=0?'Solde net à reverser DICP':'Crédit TVA net récupéré DICP')+'</b></td>';
+  for(var ai6=0;ai6<d.nAns;ai6++) h+='<td></td>';
+  h+='<td class="r"><b>'+fm(Math.abs(solTV))+'</b></td></tr></tbody>';
+  document.getElementById('t-tva').innerHTML=h;
+  var cumMin=0,cumS2=0;
+  sAn.forEach(function(s){cumS2+=s;cumMin=Math.min(cumMin,cumS2);});
+  document.getElementById('k-tva').innerHTML=[
+    kc('TVA collectée',fm(totC),'g','Sur appels de fonds'),
+    kc('TVA déductible',fm(totD),'r','Au fil du chantier'),
+    kc('Solde net',fm(solTV),solTV>=0?'o':'b',solTV>=0?'À reverser DICP':'Crédit récupérable'),
+    kc('Crédit TVA maxi',fm(Math.abs(cumMin)),'b','Récupérable trimestr. DICP'),
+  ].join('');
+}
+
+// ═══ TIMELINE ════════════════════════════════════════════════════════════════
+function rTL(d){
+  var div=document.getElementById('tl-div');
+  var phases=[
+    ['Lancement commercial',d.avC,'#eff6ff','#93c5fd','#1e3a8a'],
+    ['Chantier',d.durC,'#f0fdf4','#86efac','#065f46'],
+    ['Livraison & solde',3,'#fffbeb','#fcd34d','#78350f'],
+  ];
+  div.innerHTML=phases.filter(function(p){return p[1]>0;}).map(function(p){
+    return'<div style="flex:'+p[1]+';min-width:60px;padding:6px 8px;background:'+p[2]+';border:1px solid '+p[3]+';text-align:center;font-size:10.5px;font-weight:700;color:'+p[4]+'">'+p[0]+'<br><span style="font-weight:400;font-size:9.5px">'+p[1]+' mois</span></div>';
+  }).join('');
+  document.getElementById('tl-info').textContent='Durée totale : '+(d.avC+d.durC)+' mois · Livraison : mois '+(d.avC+d.durC)+' · KRD foncier soldé à livraison : '+d.capFr.toFixed(1)+' MS';
+}
+
+// ═══ NAVIGATION ══════════════════════════════════════════════════════════════
+function swSec(id,btn){
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.sec').forEach(function(p){p.classList.remove('on');});
+  btn.classList.add('on');document.getElementById('sec-'+id).classList.add('on');
+}
+function swRes(id,btn){
+  document.querySelectorAll('.rt').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  btn.classList.add('on');document.getElementById('r-'+id).classList.add('on');
+}
+
+// ═══ UPDATE ══════════════════════════════════════════════════════════════════
+function u(){
+  try{
+    var ca=getCA();
+    var qT=gi('q-com')+gi('q-f2')+gi('q-f3')+gi('q-f4')+gi('q-att');
+    var set=function(id,v){document.getElementById(id).textContent=v;};
+    set('v-nblots',qT);
+    set('v-cattc',ca.ttcTot.toFixed(1).replace('.',',')+' MS');
+    set('v-caht',ca.htTot.toFixed(1).replace('.',',')+' MS');
+    set('v-txvte',Math.round(gv('txvte'))+' %');
+    set('v-decote',Math.round(gv('decote'))+' %');
+    set('v-inv-info',Math.round(gv('txvte'))+'% vendus. '+Math.round(100-gv('txvte'))+'% soldés -'+Math.round(gv('decote'))+'% à livraison.');
+    set('v-avant',gi('avant-c')+' mois');
+    set('v-dur-c',gi('dur-c')+' mois');
+    set('v-dur-com',gi('dur-com')+' mois');
+    set('v-delai-acte',gi('delai-acte')+' mois');
+    set('v-pc-prev',gi('pc-prev')+' %');
+    set('v-pf',Math.round(gv('pf'))+' MS');
+    set('v-df',Math.round(gv('df'))+' ans');
+    set('v-taux-f',gv('taux-f').toFixed(1).replace('.',',')+' %');
+    set('v-dec-max',Math.round(gv('dec-max'))+' MS');
+    set('v-taux-deb',gv('taux-deb').toFixed(2).replace('.',',')+' %');
+    set('v-ter',Math.round(gv('ter'))+' MS');
+    set('v-fno',gv('fno').toFixed(1).replace('.',',')+' MS');
+    set('v-terr-tot',(gv('ter')+gv('fno')).toFixed(1).replace('.',',')+' MS');
+    set('v-trv',Math.round(gv('trv'))+' MS');
+    set('v-ar',Math.round(gv('ar'))+' MS');
+    set('v-com-pct',gv('com-pct').toFixed(2).replace('.',',')+' %');
+    set('v-assur',Math.round(gv('assur'))+' MS');
+    set('v-tva-vte',gv('tva-vte').toFixed(1).replace('.',',')+' %');
+    set('v-tva-cl',gv('tva-cl').toFixed(1).replace('.',',')+' %');
+    set('v-tva-trv',gv('tva-trv').toFixed(1).replace('.',',')+' %');
+    set('v-tva-ar',gv('tva-ar').toFixed(1).replace('.',',')+' %');
+    set('v-tva-com',gv('tva-com').toFixed(1).replace('.',',')+' %');
+    set('v-pr',Math.round(gv('pr'))+' %');
+    set('v-det',Math.round(gv('det'))+' %');
+    set('v-is',Math.round(gv('is'))===0?'0% (exo)':Math.round(gv('is'))+'%');
+    set('v-is2',Math.round(gv('is2'))===0?'0% (exo)':Math.round(gv('is2'))+'%');
+    set('v-ir',Math.round(gv('ir'))+' %');
+    var d=compute();
+    rTL(d); rSyn(d); rTreso(d); rPL(d); rTVA(d);
+  }catch(e){console.error('Erreur:',e);}
+}
+
+uV(); u();
+</script>
+</body>
+</html>
